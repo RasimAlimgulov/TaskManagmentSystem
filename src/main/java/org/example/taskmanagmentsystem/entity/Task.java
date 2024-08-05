@@ -22,32 +22,30 @@ public class Task {
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    Long id;
 
     @Column(nullable = false,name = "title")
-    private String title;
+    String title;
 
     @Column(nullable = false,name = "description")
-    private String description;
+    String description;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false,name = "status")
-    private Status status;
+    Status status;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false,name = "priority")
-    private Priority priority;
+    Priority priority;
 
     @ManyToOne
     @JoinColumn(name = "author_id",nullable = false)
-    @Column(name = "author")
-    private User author;
+    User author;
 
     @ManyToOne
     @JoinColumn(name = "assignee_id",nullable = false)
-    @Column(name = "assignee")
-    private User assignee;
+    User assignee;
 
     @OneToMany(mappedBy = "task")
-    private List<Comment> comments;
+    List<Comment> comments;
 }

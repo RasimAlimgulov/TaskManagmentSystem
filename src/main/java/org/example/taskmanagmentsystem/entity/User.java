@@ -1,11 +1,8 @@
 package org.example.taskmanagmentsystem.entity;
-
-
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import javax.xml.stream.events.Comment;
 import java.util.List;
 
 
@@ -24,21 +21,21 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column(nullable = false,unique = true,name = "email")
+    @Column(nullable = false, unique = true, name = "email")
     String email;
 
-    @Column(nullable = false,name = "password")
+    @Column(nullable = false, name = "password")
     String password;
 
-    @Column (nullable = false,name = "role")
+    @Column(nullable = false, name = "role")
     String role;
 
-@OneToMany(mappedBy = "author")
-     List<Task> createdTask;
+    @OneToMany(mappedBy = "author")
+    List<Task> createdTask;
 
-@OneToMany(mappedBy = "assignee")
+    @OneToMany(mappedBy = "assignee")
     List<Task> assignedTasks;
 
-@OneToMany(mappedBy = "user")
-     List<Comment> comments;
+    @OneToMany(mappedBy = "user")
+    List<Comment> comments;
 }

@@ -1,15 +1,7 @@
-package com.rasimalimgulov.userservice.user_service.controller;
-
-import com.rasimalimgulov.userservice.user_service.entity.User;
-import com.rasimalimgulov.userservice.user_service.exeption_handing.NoInfoAboutNewUserException;
-import com.rasimalimgulov.userservice.user_service.service.UserService;
-import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @Tag(name = "controller_methods")
 @RestController
