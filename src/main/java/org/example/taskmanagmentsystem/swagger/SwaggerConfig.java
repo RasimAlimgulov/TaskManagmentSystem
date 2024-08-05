@@ -1,4 +1,4 @@
-package com.rasimalimgulov.userservice.user_service.swagger;
+package org.example.taskmanagmentsystem.swagger;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

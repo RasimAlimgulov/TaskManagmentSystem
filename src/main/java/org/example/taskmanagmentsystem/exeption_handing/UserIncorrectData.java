@@ -1,4 +1,4 @@
-package com.rasimalimgulov.userservice.user_service.exeption_handing;
+package org.example.taskmanagmentsystem.exeption_handing;
 
 import lombok.AccessLevel;
 import lombok.Data;

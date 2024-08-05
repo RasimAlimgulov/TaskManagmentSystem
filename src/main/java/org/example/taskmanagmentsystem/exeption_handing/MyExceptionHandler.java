@@ -1,4 +1,4 @@
-package com.rasimalimgulov.userservice.user_service.exeption_handing;
+package org.example.taskmanagmentsystem.exeption_handing;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
