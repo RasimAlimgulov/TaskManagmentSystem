@@ -61,6 +61,7 @@ public class TaskController {
     public String deleteTask(@PathVariable Long id) {
         service.deleteTaskForAuthor(id);
         return "Task was deleted";
+
     }
 
 }
