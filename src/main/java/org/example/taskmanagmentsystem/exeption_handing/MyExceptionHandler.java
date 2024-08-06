@@ -9,9 +9,40 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class MyExceptionHandler {
 
     @ExceptionHandler
-    public ResponseEntity<UserIncorrectData> handlerException(NoInfoAboutNewUserException exception){
-        UserIncorrectData incorrectData=new UserIncorrectData();
+    public ResponseEntity<MessageIncorrectData> handlerException(NoInfoAboutNewUserException exception){
+        MessageIncorrectData incorrectData=new MessageIncorrectData();
         incorrectData.setMessage(exception.getMessage());
         return  new ResponseEntity<>(incorrectData, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> anotherTask(YouCantChangeOtherTask exception){
+       MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.FORBIDDEN);
+    }
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> noAuthorWithId(YouCantChangeOtherTask exception){
+        MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
+    }
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> noAssigneeWithId(NoAssigneeWithThisId exception){
+        MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
+    }
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> noPermitForChangeStatus(YouCantChangeStatusOfNotYourTask exception){
+        MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
+    }
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> noPermitForChangeStatus(IncorrectStatus exception){
+        MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
     }
 }

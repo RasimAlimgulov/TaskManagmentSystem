@@ -1,5 +1,6 @@
 package org.example.taskmanagmentsystem.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.example.taskmanagmentsystem.entity.Comment;
 import org.example.taskmanagmentsystem.entity.Task;
 import org.example.taskmanagmentsystem.service.CommentService;
@@ -9,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Tag(name = "CommentController")
 @RestController
 @RequestMapping("/commentApi")
 public class CommentController {

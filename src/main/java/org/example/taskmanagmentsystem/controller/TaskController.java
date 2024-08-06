@@ -1,55 +1,66 @@
 package org.example.taskmanagmentsystem.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.extern.log4j.Log4j2;
 import org.example.taskmanagmentsystem.dto.TaskDTO;
 import org.example.taskmanagmentsystem.entity.Task;
+import org.example.taskmanagmentsystem.entity.enums.Status;
+import org.example.taskmanagmentsystem.exeption_handing.IncorrectStatus;
 import org.example.taskmanagmentsystem.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-
+@Log4j2
+@Tag(name = "TaskController")
 @RestController
 @RequestMapping("/taskApi")
 public class TaskController {
 
     @Autowired
     private TaskService service;
-    @PostMapping("/task")
+    @PostMapping("/task")        /////Создаёт задачу для Текущего пользователь
     public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
         Task createdTask = service.createTask(taskDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
-
-    @PutMapping("/task/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable Long id, @RequestBody Task taskDetails) {
-        Task updatedTask = service.updateTask(id, taskDetails);
+    @PutMapping("/task/author/{task_id}")             ////// Изменяем СВОЮ задачу по её id (чушие задачи невозможно изменить)
+    public ResponseEntity<Task> updateTaskByAuthor(@PathVariable Long task_id, @RequestBody TaskDTO taskDTO) {
+        Task updatedTask = service.updateTaskForAuthor(task_id, taskDTO);
         return ResponseEntity.ok(updatedTask);
     }
-
-    @PostMapping("/task/{taskId}/assign/{userId}")
-    public ResponseEntity<Task> assignTask(@PathVariable Long taskId, @PathVariable Long userId) {
-        Task assignedTask = service.assignTask(taskId, userId);
-        return ResponseEntity.ok(assignedTask);
+    @PutMapping("/task/assignee/{task_id}/{status}")     ///Изменяем статус закреплённой задачи (Только свои)
+    public ResponseEntity<Task> changeStatus(@PathVariable Long task_id, String  status){
+        Task task=service.changeTaskStatusByAssignee(task_id,status);
+        return ResponseEntity.ok(task);
     }
-
-    @DeleteMapping("/task/{id}")
-    public ResponseEntity<Void> deleteTask(@PathVariable Long id) {
-        service.deleteTask(id);
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/task/{userId}")
-    public ResponseEntity<List<Task>> getTasksForUser(@PathVariable Long userId) {
-        List<Task> tasks = service.getTasksForUser(userId);
+    @GetMapping("/author/{authorId}")        //////////////Получаем отсортированную страницу с 10 (default) задачами определённого автора
+    public ResponseEntity<Page<Task>> getTasksForAuthor(
+            @PathVariable Long authorId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy) {
+        Page<Task> tasks = service.getAuthorTasks(authorId, page, size, sortBy);
         return ResponseEntity.ok(tasks);
     }
 
-    @GetMapping("/task")
-    public ResponseEntity<List<Task>> getAllTasks() {
-        List<Task> tasks = service.getAllTasks();
+    @GetMapping("/assignee/{assigneeId}")            //////////////Получаем отсортированную страницу с 10 (default) задачами определённого закреплённого пользователя
+    public ResponseEntity<Page<Task>> getTasksForAssignee(
+            @PathVariable Long assigneeId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy) {
+        Page<Task> tasks = service.getAssigneeTasks(assigneeId, page, size, sortBy);
         return ResponseEntity.ok(tasks);
+    }
+
+    @DeleteMapping("/task/{id}")                   ////////Удаляем (Может только автор задачи)
+    public String deleteTask(@PathVariable Long id) {
+        service.deleteTaskForAuthor(id);
+        return "Task was deleted";
     }
 
 }

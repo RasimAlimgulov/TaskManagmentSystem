@@ -17,5 +17,4 @@ public class TaskDTO {
     private Status status;
     private Priority priority;
     private Long assigneeId;
-    private Long authorId;
 }
