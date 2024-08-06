@@ -20,9 +20,8 @@ public class CommentController {
     @PostMapping("/")
     public ResponseEntity<Comment> addComment(
             @RequestParam Long taskId,
-            @RequestParam Long userId,
             @RequestParam String content) {
-        Comment comment = service.addComment(taskId, userId, content);
+        Comment comment = service.addComment(taskId, content);
         return ResponseEntity.status(HttpStatus.CREATED).body(comment);
     }
 

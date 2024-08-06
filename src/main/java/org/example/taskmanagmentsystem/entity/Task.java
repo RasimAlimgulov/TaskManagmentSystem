@@ -1,5 +1,6 @@
 package org.example.taskmanagmentsystem.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -45,7 +46,7 @@ public class Task {
     @ManyToOne
     @JoinColumn(name = "assignee_id",nullable = false)
     User assignee;
-
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY )
     @OneToMany(mappedBy = "task")
     List<Comment> comments;
 }

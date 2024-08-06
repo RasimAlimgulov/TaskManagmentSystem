@@ -8,6 +8,7 @@ import org.example.taskmanagmentsystem.repository.CommentRepository;
 import org.example.taskmanagmentsystem.repository.TaskRepository;
 import org.example.taskmanagmentsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,10 +27,10 @@ public class CommentService {
         this.userRepository = userRepository;
     }
 
-    public Comment addComment(Long taskId, Long userId, String content) {
+    public Comment addComment(Long taskId, String content) {
         Task task = taskRepository.findById(taskId).orElseThrow(() -> new EntityNotFoundException("Task not found"));
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found"));
-
+        String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(currentName).get();
         Comment comment = Comment.builder()
                 .task(task)
                 .user(user)
