@@ -35,4 +35,17 @@ public class UserService implements UserDetailsService {
     public void createUser(User user){
         userRepository.save(user);
     }
+
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
+    }
 }

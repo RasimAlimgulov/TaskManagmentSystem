@@ -3,10 +3,13 @@ package org.example.taskmanagmentsystem.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-    private String secret="My_secret";
+    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private String secret = Encoders.BASE64.encode(key.getEncoded());
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
