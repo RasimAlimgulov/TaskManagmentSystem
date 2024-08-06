@@ -3,10 +3,13 @@ package org.example.taskmanagmentsystem.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Encoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,12 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-    private String secret="My_secret";
+//    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+//    private String secret = Encoders.BASE64.encode(key.getEncoded());
+private String secret="MIIBCgKCAQEAuFZtb3lhm0IlJg0vGgFEHXc/UohJwWeWdyuJgFqL2QpJH+enB" +
+        "SEk7cD1LrkM+n7Z//n2Dkp/bztkUrHZfW4+GhFWvR0wXTBrg+ToBCWkxbo4fWZK" +
+        "wJ7y8t2FYNEet9T1cQwA0eFsVf3FOaeixjM6zX4QlJCVd5xU9AbJbksdjAYYc2J" +
+        "/ovV/gkBVGgakz2RZGbzVuGp38x0kCkCBgkC0CAwEAAQ==";
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }

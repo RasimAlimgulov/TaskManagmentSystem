@@ -3,6 +3,7 @@ package org.example.taskmanagmentsystem.controller;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.log4j.Log4j2;
 import org.example.taskmanagmentsystem.entity.User;
 import org.example.taskmanagmentsystem.security.AuthRequest;
 import org.example.taskmanagmentsystem.security.AuthResponse;
@@ -16,11 +17,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
+@Log4j2
 @RestController
 @RequestMapping("/api/auth")
 public class UserController {
@@ -38,7 +36,6 @@ public class UserController {
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
         try {
-            // Хеширование пароля перед сохранением
             String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
 
             // Создание нового пользователя
@@ -46,7 +43,6 @@ public class UserController {
             user.setEmail(registrationRequest.getEmail());
             user.setPassword(encodedPassword);
             user.setRole(registrationRequest.getRole());
-
             userDetailsService.createUser(user);
 
             return ResponseEntity.ok("User registered successfully");
@@ -56,18 +52,40 @@ public class UserController {
     }
     @PostMapping("/login")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthRequest authRequest) throws Exception {
+       log.info("Вызвался метод логирования");
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword())
             );
+            log.info("Успешно прошла процедура authentication");
         } catch (Exception e) {
             throw new Exception("Incorrect email or password", e);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail());
+        log.info("Получили UserDetails");
         final String jwt = jwtUtil.generateToken(userDetails);
+        log.info("Сгенерировали токен");
         return ResponseEntity.ok(new AuthResponse(jwt));
     }
 
 
+    @GetMapping("/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable String email) {
+        User user = userDetailsService.findByEmail(email);
+        return ResponseEntity.ok(user);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@PathVariable Long id, @RequestBody User userDetails) {
+        userDetails.setId(id);
+        User updatedUser = userDetailsService.updateUser(userDetails);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        userDetailsService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 
 }
