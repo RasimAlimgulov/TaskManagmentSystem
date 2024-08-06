@@ -4,16 +4,13 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.example.taskmanagmentsystem.dto.TaskDTO;
 import org.example.taskmanagmentsystem.entity.Task;
-import org.example.taskmanagmentsystem.entity.enums.Status;
-import org.example.taskmanagmentsystem.exeption_handing.IncorrectStatus;
+
 import org.example.taskmanagmentsystem.service.TaskService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 @Log4j2
 @Tag(name = "TaskController")
 @RestController
