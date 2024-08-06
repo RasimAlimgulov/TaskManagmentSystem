@@ -38,7 +38,6 @@ public class UserController {
     public ResponseEntity<?> registerUser(@RequestBody RegistrationRequest registrationRequest) {
         try {
             String encodedPassword = passwordEncoder.encode(registrationRequest.getPassword());
-
             // Создание нового пользователя
             User user = new User();
             user.setEmail(registrationRequest.getEmail());

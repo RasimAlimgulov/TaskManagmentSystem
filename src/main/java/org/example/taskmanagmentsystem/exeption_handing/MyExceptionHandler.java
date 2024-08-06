@@ -22,7 +22,7 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(data,HttpStatus.FORBIDDEN);
     }
     @ExceptionHandler
-    public ResponseEntity<MessageIncorrectData> noAuthorWithId(YouCantChangeOtherTask exception){
+    public ResponseEntity<MessageIncorrectData> noAuthorWithId(NoAuthorWithThisId exception){
         MessageIncorrectData data=new MessageIncorrectData();
         data.setMessage(exception.getMessage());
         return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
@@ -40,7 +40,7 @@ public class MyExceptionHandler {
         return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
     }
     @ExceptionHandler
-    public ResponseEntity<MessageIncorrectData> noPermitForChangeStatus(IncorrectStatus exception){
+    public ResponseEntity<MessageIncorrectData> incorrectStatus(IncorrectStatus exception){
         MessageIncorrectData data=new MessageIncorrectData();
         data.setMessage(exception.getMessage());
         return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);

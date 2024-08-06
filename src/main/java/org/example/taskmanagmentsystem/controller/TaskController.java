@@ -30,7 +30,7 @@ public class TaskController {
         return ResponseEntity.ok(updatedTask);
     }
     @PutMapping("/task/assignee/{task_id}/{status}")     ///Изменяем статус закреплённой задачи (Только свои)
-    public ResponseEntity<Task> changeStatus(@PathVariable Long task_id, String  status){
+    public ResponseEntity<Task> changeStatus(@PathVariable Long task_id, @PathVariable String  status){
         Task task=service.changeTaskStatusByAssignee(task_id,status);
         return ResponseEntity.ok(task);
     }

@@ -54,18 +54,20 @@ public class TaskService {
     }
 
     public Task changeTaskStatusByAssignee(Long id, String  status) {
+
+        String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Task task=taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Задача не найдена"));
+
+        if (!task.getAssignee().getEmail().equals(currentName)){
+            throw new YouCantChangeStatusOfNotYourTask();
+        }
         Status statusEnum;
         try{
            statusEnum =Status.valueOf(status);
         }catch (Exception e){
             throw new IncorrectStatus();
         }
-        String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
-       Task task=taskRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Задача не найдена"));
 
-       if (!task.getAssignee().getEmail().equals(currentName)){
-           throw new YouCantChangeStatusOfNotYourTask();
-       }
        task.setStatus(statusEnum);
       return taskRepository.save(task);
     }
