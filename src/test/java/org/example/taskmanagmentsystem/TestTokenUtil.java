@@ -4,6 +4,7 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -15,12 +16,12 @@ public class TestTokenUtil {
             +"/ovV/gkBVGgakz2RZGbzVuGp38x0kCkCBgkC0CAwEAAQ==";
 
     public static String generateTestToken(String username) {
-        Key key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
+        Key key = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000))
-                .signWith(key)
+                .signWith(key,SignatureAlgorithm.HS512)
                 .compact();
     }
 }
