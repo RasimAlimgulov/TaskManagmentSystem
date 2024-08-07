@@ -29,7 +29,7 @@ class TaskManagmentSystemApplicationTests {
     @MockBean
     private TaskService taskService;
     String emailUser="abc@google.com"; //////// Введите mail тестируемого User-a
-    private String jwtToken="Bearer "+TestTokenUtil.generateTestToken(emailUser);
+    private final String jwtToken="Bearer "+TestTokenUtil.generateTestToken(emailUser);
 
     @Test
     public void testCreateTask() throws Exception {
