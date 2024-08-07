@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import org.example.taskmanagmentsystem.entity.enums.Priority;
-import org.example.taskmanagmentsystem.entity.enums.Status;
+import org.example.taskmanagmentsystem.enums.Priority;
+import org.example.taskmanagmentsystem.enums.Status;
 
 import java.util.List;
 

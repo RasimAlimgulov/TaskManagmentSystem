@@ -5,7 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.example.taskmanagmentsystem.dto.TaskDTO;
 import org.example.taskmanagmentsystem.entity.Task;
 import org.example.taskmanagmentsystem.entity.User;
-import org.example.taskmanagmentsystem.entity.enums.Status;
+import org.example.taskmanagmentsystem.enums.Status;
 import org.example.taskmanagmentsystem.exeption_handing.IncorrectStatus;
 import org.example.taskmanagmentsystem.exeption_handing.NoAuthorWithThisId;
 import org.example.taskmanagmentsystem.exeption_handing.YouCantChangeOtherTask;
@@ -21,7 +21,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 
 @Log4j2
 @Service

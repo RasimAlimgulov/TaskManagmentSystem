@@ -4,6 +4,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.example.taskmanagmentsystem.entity.Comment;
 import org.example.taskmanagmentsystem.entity.Task;
 import org.example.taskmanagmentsystem.entity.User;
+import org.example.taskmanagmentsystem.exeption_handing.YouCantDeleteOtherComments;
 import org.example.taskmanagmentsystem.repository.CommentRepository;
 import org.example.taskmanagmentsystem.repository.TaskRepository;
 import org.example.taskmanagmentsystem.repository.UserRepository;
@@ -41,6 +42,11 @@ public class CommentService {
     }
 
     public void deleteComment(Long id) {
+        String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
+        Comment comment=commentRepository.findById(id).get();
+        if(!comment.getUser().getEmail().equals(currentName)){
+            throw new YouCantDeleteOtherComments();
+        }
         commentRepository.deleteById(id);
     }
 }

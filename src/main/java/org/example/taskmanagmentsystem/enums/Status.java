@@ -1,4 +1,4 @@
-package org.example.taskmanagmentsystem.entity.enums;
+package org.example.taskmanagmentsystem.enums;
 
 public enum Status {
     PENDING,IN_PROGRESS,COMPLETED

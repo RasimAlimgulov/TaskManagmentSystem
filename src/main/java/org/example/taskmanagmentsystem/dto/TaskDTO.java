@@ -4,8 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.example.taskmanagmentsystem.entity.enums.Priority;
-import org.example.taskmanagmentsystem.entity.enums.Status;
+import org.example.taskmanagmentsystem.enums.Priority;
+import org.example.taskmanagmentsystem.enums.Status;
 
 @Getter
 @Setter

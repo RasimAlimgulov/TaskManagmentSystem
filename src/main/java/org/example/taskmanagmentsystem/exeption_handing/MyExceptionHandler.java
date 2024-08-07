@@ -45,4 +45,11 @@ public class MyExceptionHandler {
         data.setMessage(exception.getMessage());
         return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<MessageIncorrectData> deleteComment(YouCantDeleteOtherComments exception){
+        MessageIncorrectData data=new MessageIncorrectData();
+        data.setMessage(exception.getMessage());
+        return new ResponseEntity<>(data,HttpStatus.NO_CONTENT);
+    }
 }
