@@ -29,7 +29,9 @@ public class CommentService {
     }
 
     public Comment addComment(Long taskId, String content) {
-        Task task = taskRepository.findById(taskId).orElseThrow(() -> new EntityNotFoundException("Task not found"));
+        Task task;
+        try{task = taskRepository.findById(taskId).get();}
+        catch (NullPointerException e){throw new EntityNotFoundException("Task not found");}
         String currentName = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(currentName).get();
         Comment comment = Comment.builder()

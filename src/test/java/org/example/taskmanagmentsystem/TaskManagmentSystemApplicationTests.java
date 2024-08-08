@@ -1,23 +1,32 @@
 package org.example.taskmanagmentsystem;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
 import org.aspectj.lang.annotation.Before;
 import org.example.taskmanagmentsystem.dto.TaskDTO;
+import org.example.taskmanagmentsystem.entity.Comment;
 import org.example.taskmanagmentsystem.entity.Task;
 import org.example.taskmanagmentsystem.entity.User;
 import org.example.taskmanagmentsystem.enums.Priority;
 import org.example.taskmanagmentsystem.enums.Status;
+import org.example.taskmanagmentsystem.repository.CommentRepository;
+import org.example.taskmanagmentsystem.repository.TaskRepository;
+import org.example.taskmanagmentsystem.repository.UserRepository;
 import org.example.taskmanagmentsystem.security.RegistrationRequest;
+import org.example.taskmanagmentsystem.service.CommentService;
 import org.example.taskmanagmentsystem.service.TaskService;
 import org.example.taskmanagmentsystem.service.UserService;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
-import static org.mockito.Mockito.doNothing;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 
 import org.springframework.http.MediaType;
@@ -29,9 +38,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Log4j2
@@ -50,6 +59,14 @@ class TaskManagmentSystemApplicationTests {
     private UserDetails userDetails;
     @MockBean
     private BCryptPasswordEncoder passwordEncoder;
+    @MockBean
+    private TaskRepository taskRepository;
+    @MockBean
+    private UserRepository userRepository;
+    @MockBean
+    private CommentRepository commentRepository;
+    @InjectMocks
+    private CommentService commentService;
     private static String jwtToken;
 
     @BeforeAll
@@ -93,4 +110,24 @@ class TaskManagmentSystemApplicationTests {
                         .string("User registered successfully"));
 
     }
+
+    @Test
+    void testAddComment_TaskNotFound() {
+        Long taskId = 1L;
+        String content = "New comment";
+
+        when(taskRepository.findById(taskId)).thenReturn(null);
+
+        EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
+            commentService.addComment(taskId, content);
+        });
+
+        assertEquals("Task not found", exception.getMessage());
+
+        verify(taskRepository,never()).findById(taskId);
+        verify(userRepository, never()).findByEmail(anyString());
+        verify(commentRepository, never()).save(any(Comment.class));
+
+    }
+
 }
