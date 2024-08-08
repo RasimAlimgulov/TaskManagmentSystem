@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -17,12 +18,8 @@ import java.util.function.Function;
 
 @Service
 public class JwtUtil {
-//    Key key = Keys.secretKeyFor(SignatureAlgorithm.HS256);
-//    private String secret = Encoders.BASE64.encode(key.getEncoded());
-private String secret="MIIBCgKCAQEAuFZtb3lhm0IlJg0vGgFEHXc/UohJwWeWdyuJgFqL2QpJH+enB" +
-        "SEk7cD1LrkM+n7Z//n2Dkp/bztkUrHZfW4+GhFWvR0wXTBrg+ToBCWkxbo4fWZK" +
-        "wJ7y8t2FYNEet9T1cQwA0eFsVf3FOaeixjM6zX4QlJCVd5xU9AbJbksdjAYYc2J" +
-        "/ovV/gkBVGgakz2RZGbzVuGp38x0kCkCBgkC0CAwEAAQ==";
+private String secret="EPy_mM65kbYCRHDVtsMkxReKnkPJouUnxFl2R2Cx2d-qKgIg-bdNa-Pv_X5jMdOb1T7hq05Xb3Iz_DmdnMowTg==";
+private Key key=Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -37,7 +34,7 @@ private String secret="MIIBCgKCAQEAuFZtb3lhm0IlJg0vGgFEHXc/UohJwWeWdyuJgFqL2QpJH
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody();
     }
 
     private Boolean isTokenExpired(String token) {
@@ -52,7 +49,7 @@ private String secret="MIIBCgKCAQEAuFZtb3lhm0IlJg0vGgFEHXc/UohJwWeWdyuJgFqL2QpJH
     private String createToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
-                .signWith(SignatureAlgorithm.HS256, secret).compact();
+                .signWith(key,SignatureAlgorithm.HS512).compact();
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {

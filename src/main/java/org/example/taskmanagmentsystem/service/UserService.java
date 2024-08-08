@@ -1,6 +1,7 @@
 package org.example.taskmanagmentsystem.service;
 
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.example.taskmanagmentsystem.entity.User;
 import org.example.taskmanagmentsystem.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
+@Log4j2
 @Service
 public class UserService implements UserDetailsService {
 
@@ -27,7 +28,13 @@ public class UserService implements UserDetailsService {
     @Transactional
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user =findByUserName(email).orElseThrow(()->new UsernameNotFoundException("Пользователь с эти именем "+email+" не найден"));
+        log.info("Ищем юзера с именем "+email);
+
+        User user =findByUserName(email).get();
+        if (user == null) {
+            log.info("Нет юзера с таким именем");
+            throw new UsernameNotFoundException("User not found with username: " + email);
+        }
         return new org.springframework.security.core.userdetails.User(user.getEmail(),user.getPassword()
                 , Collections.singletonList(new SimpleGrantedAuthority(user.getRole())));
     }

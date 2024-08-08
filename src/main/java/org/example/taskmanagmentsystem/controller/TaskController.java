@@ -35,6 +35,7 @@ public class TaskController {
                     @ApiResponse(responseCode = "400", description = "Ошибка при создании задачи")
             })
     public ResponseEntity<Task> createTask(@RequestBody TaskDTO taskDTO) {
+        log.info("Выполняется запрос");
         Task createdTask = service.createTask(taskDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdTask);
     }
