@@ -2,7 +2,6 @@ package org.example.taskmanagmentsystem;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.log4j.Log4j2;
-import org.aspectj.lang.annotation.Before;
 import org.example.taskmanagmentsystem.dto.TaskDTO;
 import org.example.taskmanagmentsystem.entity.Comment;
 import org.example.taskmanagmentsystem.entity.Task;
@@ -13,9 +12,9 @@ import org.example.taskmanagmentsystem.repository.CommentRepository;
 import org.example.taskmanagmentsystem.repository.TaskRepository;
 import org.example.taskmanagmentsystem.repository.UserRepository;
 import org.example.taskmanagmentsystem.security.RegistrationRequest;
-import org.example.taskmanagmentsystem.service.CommentService;
-import org.example.taskmanagmentsystem.service.TaskService;
-import org.example.taskmanagmentsystem.service.UserService;
+import org.example.taskmanagmentsystem.service.CommentServiceImpl;
+import org.example.taskmanagmentsystem.service.TaskServiceImpl;
+import org.example.taskmanagmentsystem.service.UserServiceImpl;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -31,14 +30,11 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 import org.springframework.test.web.servlet.MockMvc;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.util.ArrayList;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -52,9 +48,9 @@ class TaskManagmentSystemApplicationTests {
     @Autowired
     private ObjectMapper objectMapper;
     @MockBean
-    private TaskService taskService;
+    private TaskServiceImpl taskServiceImpl;
     @MockBean
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
     @MockBean
     private UserDetails userDetails;
     @MockBean
@@ -66,7 +62,7 @@ class TaskManagmentSystemApplicationTests {
     @MockBean
     private CommentRepository commentRepository;
     @InjectMocks
-    private CommentService commentService;
+    private CommentServiceImpl commentServiceImpl;
     private static String jwtToken;
 
     @BeforeAll
@@ -80,8 +76,8 @@ class TaskManagmentSystemApplicationTests {
         Task task = Task.builder().id(1L).title("Task Title").description("Task Description").status(Status.PENDING).priority(Priority.HIGH).assignee(new User()).author(new User()).build();
 
         UserDetails mockUserDetails = new org.springframework.security.core.userdetails.User("petya@mail.ru", "", new ArrayList<>());
-        when(taskService.createTask(any(TaskDTO.class))).thenReturn(task);
-        when(userService.loadUserByUsername("petya@mail.ru")).thenReturn(mockUserDetails);
+        when(taskServiceImpl.createTask(any(TaskDTO.class))).thenReturn(task);
+        when(userServiceImpl.loadUserByUsername("petya@mail.ru")).thenReturn(mockUserDetails);
 
         log.info("Выполнется тестовый запрос");
         mockMvc.perform(post("/taskApi/task")
@@ -102,7 +98,7 @@ class TaskManagmentSystemApplicationTests {
         registrationRequest.setRole("ADMIN");
 
         when(passwordEncoder.encode(registrationRequest.getPassword())).thenReturn("encodedPassword");
-        doNothing().when(userService).createUser(any(User.class));
+        doNothing().when(userServiceImpl).createUser(any(User.class));
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(registrationRequest)))
@@ -119,7 +115,7 @@ class TaskManagmentSystemApplicationTests {
         when(taskRepository.findById(taskId)).thenReturn(null);
 
         EntityNotFoundException exception = assertThrows(EntityNotFoundException.class, () -> {
-            commentService.addComment(taskId, content);
+            commentServiceImpl.addComment(taskId, content);
         });
 
         assertEquals("Task not found", exception.getMessage());
